@@ -1,14 +1,14 @@
 ---
-#🌐 Proyecto MQTT con Node.js y PostgreSQL
+###🌐 Proyecto MQTT con Node.js y PostgreSQL
 
-#📖 Descripción
+###📖 Descripción
 
 Este proyecto 🚀 es un servidor en Node.js que se conecta a un broker MQTT 
 y utiliza PostgreSQL para la gestión de datos. Diseñado específicamente para 
 interactuar con dispositivos IoT 📡, facilita la recepción y procesión de datos 
 a través del protocolo MQTT.
 
-#📋 Requisitos Previos
+###📋 Requisitos Previos
 
 Para sumergirte en este proyecto, necesitarás:
 - Node.js (última versión LTS 🌟 recomendada)
@@ -16,7 +16,7 @@ Para sumergirte en este proyecto, necesitarás:
 - PostgreSQL (última versión estable 🏁)
 
 
-#🛠 Instalación
+###🛠 Instalación
 
 📦 Clonar el Repositorio
 Obtén el código fuente clonando este repositorio:
@@ -108,7 +108,7 @@ Encuentra comentarios detallados en el código para una comprensión profunda de
 
 Este proyecto 🛠 es una aplicación de servidor desarrollada utilizando Node.js y TypeScript, que facilita la integración de dispositivos LoRaWAN 📡 con la red The Things Network (TTN) y almacena la información recibida en una base de datos PostgreSQL. Está diseñado para manejar eficientemente la comunicación entre dispositivos IoT y aplicaciones de servidor mediante el uso del protocolo MQTT, proporcionando un flujo de datos en tiempo real para aplicaciones de monitoreo y análisis.
 
-# 📂 Estructura del Proyecto
+### 📂 Estructura del Proyecto
 
 El proyecto se estructura en varios módulos para mantener una arquitectura limpia y escalable:
 
