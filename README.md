@@ -1,14 +1,14 @@
 ---
-##🌐 Proyecto MQTT con Node.js y PostgreSQL
+#🌐 Proyecto MQTT con Node.js y PostgreSQL
 
-##📖 Descripción
+#📖 Descripción
 
 Este proyecto 🚀 es un servidor en Node.js que se conecta a un broker MQTT 
 y utiliza PostgreSQL para la gestión de datos. Diseñado específicamente para 
 interactuar con dispositivos IoT 📡, facilita la recepción y procesión de datos 
 a través del protocolo MQTT.
 
-##📋 Requisitos Previos
+#📋 Requisitos Previos
 
 Para sumergirte en este proyecto, necesitarás:
 - Node.js (última versión LTS 🌟 recomendada)
@@ -16,7 +16,7 @@ Para sumergirte en este proyecto, necesitarás:
 - PostgreSQL (última versión estable 🏁)
 
 
-##🛠 Instalación
+#🛠 Instalación
 
 📦 Clonar el Repositorio
 Obtén el código fuente clonando este repositorio:
