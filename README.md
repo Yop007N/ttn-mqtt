@@ -18,15 +18,7 @@ Para sumergirte en este proyecto, necesitarás:
 
 ###🛠 Instalación
 
-📦 Clonar el Repositorio
-Obtén el código fuente clonando este repositorio:
- ```bash
-        git clone -b integracion-ttn-node-mqtt https://PTI-PY@dev.azure.com/PTI-PY/DT.723%20-%20Dev/_git/DT.723%20-%20Dev 
-   ```
-### 📚 Instalar Dependencias
-Dentro del directorio del proyecto, ejecuta:
-```bash
-npm install
+install
 ```
 
 ### ⚙ Configuración del Proyecto
