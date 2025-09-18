@@ -1,188 +1,357 @@
----
-###🌐 Proyecto MQTT con Node.js y PostgreSQL
+# TTN MQTT Gateway 📡
 
-###📖 Descripción
+> Sistema de comunicación MQTT para dispositivos IoT con integración a PostgreSQL
 
-Este proyecto 🚀 es un servidor en Node.js que se conecta a un broker MQTT 
-y utiliza PostgreSQL para la gestión de datos. Diseñado específicamente para 
-interactuar con dispositivos IoT 📡, facilita la recepción y procesión de datos 
-a través del protocolo MQTT.
+## 📋 Descripción
 
-###📋 Requisitos Previos
+TTN MQTT Gateway es una aplicación Node.js robusta que actúa como puente entre dispositivos IoT y bases de datos, utilizando el protocolo MQTT para comunicación en tiempo real. Diseñado específicamente para trabajar con The Things Network (TTN) y optimizado para manejo de grandes volúmenes de datos de sensores.
 
-Para sumergirte en este proyecto, necesitarás:
-- Node.js (última versión LTS 🌟 recomendada)
-- npm (incluido con Node.js)
-- PostgreSQL (última versión estable 🏁)
+## ✨ Características Principales
 
+- **🔌 Conectividad MQTT**: Cliente MQTT optimizado para alta frecuencia de mensajes
+- **💾 Persistencia de Datos**: Integración con PostgreSQL usando Sequelize ORM
+- **⚡ Procesamiento en Tiempo Real**: Manejo asíncrono de datos de sensores
+- **🛡️ Manejo de Errores**: Sistema robusto de gestión de errores y logging
+- **🔧 Middleware Personalizable**: Sistema de filtros y validación de datos
+- **📊 Monitoreo de Dispositivos**: Seguimiento del estado de dispositivos IoT
+- **🌐 API REST**: Endpoints para consulta y gestión de datos
 
-###🛠 Instalación
+## 🛠️ Stack Tecnológico
 
-install
-```
+### Backend
+- **Node.js** - Runtime principal
+- **TypeScript** - Tipado estático
+- **Express.js** - Framework web
+- **MQTT 5.3.5** - Protocolo de comunicación IoT
 
-### ⚙ Configuración del Proyecto
-### 🗄 Base de Datos
-Ajusta las variables de entorno para PostgreSQL en `.env`:
-```plaintext
-DB_DATABASE=tu_base_de_datos
-DB_USERNAME=tu_usuario_de_postgres
-DB_PASSWORD=tu_contraseña
-DB_HOST=****
-DB_PORT=****
-```
----
+### Base de Datos
+- **PostgreSQL** - Base de datos principal
+- **Sequelize ORM** - Mapeo objeto-relacional
+- **pg** - Driver PostgreSQL nativo
 
-### 🚀 Estructura del Proyecto - Un Viaje por el Código
+### Herramientas de Desarrollo
+- **Jest** - Framework de testing
+- **Nodemon** - Desarrollo en caliente
+- **ts-node** - Ejecución directa de TypeScript
+- **Azure Pipelines** - CI/CD
 
-Adéntrate en la arquitectura de nuestro proyecto MQTT, diseñada meticulosamente para una navegación intuitiva y un mantenimiento sin esfuerzos. 
-Aquí está el mapa 🗺️:
+## 🚀 Instalación y Configuración
 
-```  
-/mi-proyecto-mqtt
-  /src
-    /config                   🛠️ - Donde la magia de la configuración comienza.
-    /controllers              👮 - Los guardianes que dirigen el tráfico de datos.
-      - deviceController.ts
-      - errorHandler.ts
-    /middleware               🚧 - Los filtros por donde todo debe pasar.
-      - deviceMiddleware.ts
-    /models                   📦 - Los moldes de nuestros datos.
-      - deviceModel.ts
-      - index.ts
-    /mqtt                     📡 - Nuestro canal de comunicación con el mundo IoT.
-      - mqttClient.ts
-    /routes                   🚏 - Caminos definidos para explorar nuestro proyecto.
-      - deviceRoutes.ts
-    /services                 🛎️ - Servicios esenciales que cumplen las solicitudes.
-      - deviceServices.ts
-    /types                    📄 - Definiciones de tipos para TypeScript.
-      - deviceTypes.ts
-    /utils                    🔧 - Herramientas que hacen la vida más fácil.
-      - calculatorTests.ts
-      - logger.ts
-    - app.ts                  🌟 - El corazón pulsante de nuestra aplicación.
-  .env                        🗝️ - Secretos bien guardados.
-  .gitignore                  🙈 - Lo que preferimos mantener en las sombras.
-  package.json                📋 - Nuestro manifiesto y lista de invitados.
-  package-lock.json           🔒 - Manteniendo firmes nuestras dependencias.
-  README.md                   📖 - La guía para navegantes y curiosos.
-  tsconfig.json               🏗️ - El esqueleto de nuestro proyecto TypeScript.
-```
----
+### Prerrequisitos
+- Node.js 18+ (LTS recomendado)
+- PostgreSQL 13+
+- npm o yarn
+- Broker MQTT (TTN o Mosquitto)
 
-### 🚀 Ejecución
-### 🔧 Desarrollo
-Inicia el servidor en modo de desarrollo con:
+### Instalación
+
 ```bash
-npm run dev
+# Clonar el repositorio
+git clone https://github.com/Yop007N/ttn-mqtt.git
+cd ttn-mqtt
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env
 ```
-Conectándose automáticamente al broker MQTT y a PostgreSQL.
 
-### 📚 Base de Datos
-### 🏗 Creación de Tablas
-Script SQL para crear las tablas necesarias:
-```sql
-CREATE TABLE IF NOT EXISTS device_payloads (
-    id SERIAL PRIMARY KEY,
-    device_id VARCHAR(255) NOT NULL,
-    application_id VARCHAR(255) NOT NULL,
-    dev_eui VARCHAR(255) NOT NULL,
-    join_eui VARCHAR(255) NOT NULL,
-    decoded_payload_bytes VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+### Configuración de Variables de Entorno
+
+```env
+# Base de Datos PostgreSQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=ttn_mqtt_db
+DB_USERNAME=your_db_user
+DB_PASSWORD=your_db_password
+
+# Configuración MQTT
+MQTT_BROKER_URL=mqtt://broker.url
+MQTT_CLIENT_ID=ttn-gateway-client
+MQTT_USERNAME=your_mqtt_user
+MQTT_PASSWORD=your_mqtt_password
+
+# The Things Network
+TTN_APPLICATION_ID=your_ttn_app_id
+TTN_ACCESS_KEY=your_ttn_access_key
+
+# Servidor
+PORT=3000
+NODE_ENV=development
 ```
-### 📄 Documentación del Código
-Encuentra comentarios detallados en el código para una comprensión profunda de cada componente.
-# 🌐 Descripción General
 
-Este proyecto 🛠 es una aplicación de servidor desarrollada utilizando Node.js y TypeScript, que facilita la integración de dispositivos LoRaWAN 📡 con la red The Things Network (TTN) y almacena la información recibida en una base de datos PostgreSQL. Está diseñado para manejar eficientemente la comunicación entre dispositivos IoT y aplicaciones de servidor mediante el uso del protocolo MQTT, proporcionando un flujo de datos en tiempo real para aplicaciones de monitoreo y análisis.
+## 📖 Scripts Disponibles
 
-### 📂 Estructura del Proyecto
+```bash
+# Desarrollo
+npm run dev           # Ejecuta con nodemon y ts-node
 
-El proyecto se estructura en varios módulos para mantener una arquitectura limpia y escalable:
+# Construcción
+npm run prebuild      # Limpia el directorio dist
+npm run build         # Compila TypeScript a JavaScript
 
-- `app.ts`:       Punto de entrada 🚪 del servidor que inicia el middleware y las rutas.
-- `/config`:      Contiene la configuración de la base de datos y variables de entorno.
-- `/controllers`: Alberga los controladores que gestionan las solicitudes y respuestas HTTP.
-- `/middleware`:  Define funciones middleware para el manejo de errores y validación de datos.
-- `/models`:      Define los modelos de Sequelize que representan y gestionan los datos de la aplicación.
-- `/mqtt`:        Incluye la configuración y gestión del cliente MQTT.
-- `/routes`:      Contiene las rutas HTTP que definen la interfaz de la API.
-- `/services`:    Implementa la lógica de negocio y la interacción con la base de datos.
-- `/types`:       Define las interfaces TypeScript para tipos de datos consistentes en el proyecto.
-- `/utils`:       Proporciona herramientas y funciones auxiliares para todo el proyecto.
+# Producción
+npm start             # Ejecuta la aplicación compilada
 
-# 🧩 Módulos
+# Testing
+npm test              # Ejecuta los tests con Jest
+```
 
-### `app.ts`
-Este módulo 📄 inicia el servidor Express, configura middleware global y rutas, y conecta con la base de datos, actuando como el director de orquesta del proyecto.
+## 🏗️ Estructura del Proyecto
 
-### `/config`
-Establece la conexión con la base de datos y centraliza las configuraciones globales 🌐 que se utilizan en toda la aplicación.
+```
+src/
+├── config/                 # Configuraciones de la aplicación
+│   ├── database.ts         # Configuración de PostgreSQL
+│   └── mqtt.ts             # Configuración del cliente MQTT
+├── controllers/            # Controladores de la API
+│   ├── deviceController.ts # Gestión de dispositivos
+│   └── errorHandler.ts     # Manejo centralizado de errores
+├── middleware/             # Middlewares personalizados
+│   └── deviceMiddleware.ts # Validación y filtrado de datos
+├── models/                 # Modelos de base de datos
+│   ├── Device.ts           # Modelo de dispositivos
+│   ├── SensorData.ts       # Modelo de datos de sensores
+│   └── index.ts            # Configuración de Sequelize
+├── services/               # Servicios de negocio
+│   ├── mqttService.ts      # Lógica de MQTT
+│   └── dataProcessor.ts    # Procesamiento de datos
+├── types/                  # Definiciones de tipos TypeScript
+│   └── mqtt.types.ts       # Tipos para mensajes MQTT
+├── utils/                  # Utilidades y helpers
+│   ├── logger.ts           # Sistema de logging
+│   └── validators.ts       # Validadores de datos
+└── app.ts                  # Punto de entrada de la aplicación
+```
 
-### `/controllers`
-Manejan las solicitudes que llegan al servidor y delegan la ejecución de la lógica de negocio a los servicios, formatean las respuestas y manejan las excepciones. Los controladores son el punto de conexión entre el servidor Express y los servicios que interactúan con la base de datos.
+## 📡 Funcionalidades MQTT
 
-### `/middleware`
-Proporciona funciones de middleware que se ejecutan entre la solicitud HTTP y los controladores. Esto incluye la captura de errores, la validación de datos de entrada y la autenticación de usuarios.
+### Conexión y Suscripciones
 
-### `/models`
-Define la estructura de la base de datos utilizando el ORM Sequelize. Cada modelo representa una tabla en la base de datos y las relaciones entre ellas, proporcionando métodos para consultar y manipular los datos.
+```typescript
+// Suscripción a topics de TTN
+const topics = [
+  'v3/+/devices/+/up',        // Mensajes uplink
+  'v3/+/devices/+/down/sent', // Confirmación downlink
+  'v3/+/devices/+/join',      // Eventos de join
+];
 
-### `/mqtt`
-Gestiona la conexión y la lógica asociada al cliente MQTT. Se encarga de suscribirse a los topics correspondientes y procesar los mensajes entrantes, desencadenando acciones en la base de datos o servicios según sea necesario.
+// Manejo de mensajes
+client.on('message', (topic, payload) => {
+  const data = JSON.parse(payload.toString());
+  await processDeviceData(data);
+});
+```
 
-### `/routes`
-Organiza y expone los endpoints de la API. Cada ruta se asocia con un controlador que manejará la lógica de la petición.
+### Procesamiento de Datos
 
-### `/services`
-Contiene la lógica de negocio central del proyecto. Los servicios se comunican con los modelos para realizar consultas a la base de datos y procesar los datos según las reglas de negocio.
+- **Validación**: Verificación de estructura y tipos de datos
+- **Transformación**: Conversión de formatos y unidades
+- **Persistencia**: Almacenamiento en PostgreSQL
+- **Notificaciones**: Alertas para eventos críticos
 
-### `/types`
-Aloja definiciones de tipos TypeScript para garantizar que los datos mantengan su integridad a lo largo de la aplicación. Los tipos definen la forma de los objetos que se pasan entre funciones, ayudando a prevenir errores en tiempo de compilación.
+## 🗄️ Modelos de Base de Datos
 
-### `/utils`
-Ofrece funciones de utilidad como `logger` para registrar mensajes en la consola y posiblemente en archivos de log, y otras herramientas que pueden ser reutilizadas en diferentes partes del proyecto.
+### Dispositivos
 
-# ⚙️ Flujo de Trabajo
-1. Inicio del servidor con `node` o `nodemon` ejecutando `app.ts`.
-2. Conexión a la base de datos y configuración del cliente MQTT.
-3. Recepción de solicitudes HTTP y enrutamiento a los controladores correspondientes.
-4. Procesamiento de mensajes MQTT y ejecución de la lógica de negocios en los servicios correspondientes.
-5. Los servicios interactúan con la base de datos a través de los modelos para almacenar o recuperar datos.
-6. Respuestas formateadas y enviadas de vuelta al cliente o, en caso de errores, manejo de excepciones y proporcionamiento de mensajes de error descriptivos.
-7. Monitoreo continuo de la conexión MQTT para recibir y procesar datos entrantes de dispositivos LoRaWAN.
+```typescript
+interface Device {
+  id: string;
+  name: string;
+  devEui: string;
+  applicationId: string;
+  lastSeen: Date;
+  isActive: boolean;
+  metadata: JSON;
+}
+```
 
-# 🖥 Instalación y Ejecución
-Para poner en marcha este proyecto, asegúrate de tener Node.js instalado y sigue estos pasos:
+### Datos de Sensores
 
-1. Clona el repositorio o descarga el código fuente.
-2. Navega al directorio del proyecto.
-3. Ejecuta `npm install` para instalar las dependencias.
-4. Crea un archivo `.env` en la raíz del proyecto para definir las variables de entorno necesarias.
-5. Ejecuta `npm run build` para compilar TypeScript a JavaScript.
-6. Inicia el servidor con `npm start` o `npm run dev` para el desarrollo con recarga automática.
+```typescript
+interface SensorData {
+  id: number;
+  deviceId: string;
+  timestamp: Date;
+  payload: JSON;
+  rssi: number;
+  snr: number;
+  frequency: number;
+  dataRate: string;
+}
+```
 
-# 📦 Dependencias
-- Node.js y npm
-- Express: framework de servidor
-- Sequelize: ORM para PostgreSQL
-- MQTT: cliente para la comunicación con MQTT broker
-- Dotenv: para manejar variables de entorno
-- Tipos de TypeScript: para definiciones de tipos y aserciones
+## 🌐 API Endpoints
 
-Las dependencias exactas y sus versiones están detalladas en el archivo `package.json`.
+### Dispositivos
 
-# 📝 Documentación con Typedoc
-Para generar la documentación del proyecto con Typedoc:
+```http
+GET    /api/devices              # Listar todos los dispositivos
+GET    /api/devices/:id          # Obtener dispositivo específico
+POST   /api/devices              # Registrar nuevo dispositivo
+PUT    /api/devices/:id          # Actualizar dispositivo
+DELETE /api/devices/:id          # Eliminar dispositivo
+```
 
-1. Instala Typedoc globalmente con `npm install -g typedoc` o como dependencia de desarrollo.
-2. Asegúrate de tener comentarios adecuados en tu código TypeScript, utilizando el formato JSDoc.
-3. Ejecuta `typedoc --out docs src` para generar la documentación en la carpeta `docs`.
-4. La documentación se puede visualizar abriendo los archivos HTML generados en un navegador web.
+### Datos de Sensores
 
-Typedoc es una herramienta poderosa que mejora la comprensibilidad del código y facilita el mantenimiento y la colaboración en proyectos TypeScript.
+```http
+GET    /api/data                 # Obtener datos de sensores
+GET    /api/data/device/:id      # Datos por dispositivo
+GET    /api/data/range           # Datos por rango de fechas
+POST   /api/data/query           # Consulta personalizada
+```
+
+### Estadísticas
+
+```http
+GET    /api/stats/devices        # Estadísticas de dispositivos
+GET    /api/stats/data           # Estadísticas de datos
+GET    /api/health               # Estado del sistema
+```
+
+## 🔧 Configuración Avanzada
+
+### Cliente MQTT Personalizado
+
+```typescript
+const mqttOptions = {
+  clientId: `ttn-gateway-${Math.random().toString(16)}`,
+  keepalive: 60,
+  reconnectPeriod: 5000,
+  connectTimeout: 30000,
+  will: {
+    topic: 'ttn-gateway/status',
+    payload: 'offline',
+    qos: 1,
+    retain: true
+  }
+};
+```
+
+### Configuración de Base de Datos
+
+```typescript
+const sequelizeConfig = {
+  dialect: 'postgres',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
+  database: process.env.DB_DATABASE,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  pool: {
+    max: 20,
+    min: 5,
+    acquire: 60000,
+    idle: 10000
+  }
+};
+```
+
+## 🧪 Testing
+
+```bash
+# Ejecutar todos los tests
+npm test
+
+# Tests con cobertura
+npm run test:coverage
+
+# Tests en modo watch
+npm run test:watch
+```
+
+### Ejemplo de Test
+
+```typescript
+describe('MQTT Service', () => {
+  test('should process TTN message correctly', async () => {
+    const mockPayload = {
+      end_device_ids: { device_id: 'test-device' },
+      uplink_message: {
+        decoded_payload: { temperature: 25.5 }
+      }
+    };
+
+    const result = await processMessage(mockPayload);
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+## 🚀 Despliegue
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY dist ./dist
+EXPOSE 3000
+
+CMD ["npm", "start"]
+```
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+services:
+  ttn-mqtt:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ttn_mqtt_db
+      POSTGRES_USER: ttn_user
+      POSTGRES_PASSWORD: ttn_password
+```
+
+## 📊 Monitoreo y Logging
+
+- **Winston Logger** - Sistema de logs estructurado
+- **Health Checks** - Verificación de estado de servicios
+- **Metrics** - Métricas de rendimiento y uso
+- **Alertas** - Notificaciones automáticas por eventos críticos
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea tu branch (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push al branch (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia ISC. Ver `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+**Enrique Bobadilla (Yop007N)**
+- GitHub: [@Yop007N](https://github.com/Yop007N)
+- Especialización: IoT y Comunicaciones MQTT
+
+## 🔗 Enlaces Relacionados
+
+- [The Things Network](https://www.thethingsnetwork.org/)
+- [MQTT Protocol](https://mqtt.org/)
+- [Node.js MQTT Client](https://github.com/mqttjs/MQTT.js)
+- [Sequelize ORM](https://sequelize.org/)
+
 ---
+
+📡 Conectando el mundo IoT, un mensaje a la vez
