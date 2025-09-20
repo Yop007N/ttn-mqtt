@@ -1,33 +1,77 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/config';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { sequelize } from '../config/config';
 
 /**
- * Clase Device que representa un registro de dispositivo en la base de datos.
- * Extiende Model de Sequelize, permitiendo interactuar con la tabla de dispositivos.
+ * Enhanced Device model with optimized database schema and performance features
  */
-
-export class Device extends Model {
-
-// Descripciones de las propiedades del modelo Device
-public id!: number; // Identificador único del dispositivo
-
-public device_id!: string; // Identificador del dispositivo asignado por el usuario
-
-public application_id!: string; // Identificador de la aplicación a la que pertenece el dispositivo
-
-public dev_eui!: string; // Identificador único del dispositivo (EUI) proporcionado por el fabricante
-
-public join_eui!: string; // Identificador de la entidad de unión (EUI) para la autenticación del dispositivo
-
-public decoded_payload_bytes!: string; // Datos decodificados del payload recibido del dispositivo, en formato hexadecimal
-
-public created_at!: Date; // Fecha y hora de creación del registro del dispositivo
-
-public updated_at!: Date; // Fecha y hora de la última actualización del registro del dispositivo
-
+export interface DeviceAttributes {
+  id: number;
+  device_id: string;
+  application_id: string;
+  dev_eui: string;
+  join_eui: string;
+  decoded_payload_bytes: string;
+  raw_payload?: Buffer;
+  last_seen_at?: Date;
+  is_active: boolean;
+  metadata?: any;
+  created_at: Date;
+  updated_at: Date;
 }
-    // Inicializa el modelo con sus campos y opciones
 
+export class Device extends Model<
+  InferAttributes<Device>,
+  InferCreationAttributes<Device>
+> {
+  declare id: CreationOptional<number>;
+  declare device_id: string;
+  declare application_id: string;
+  declare dev_eui: string;
+  declare join_eui: string;
+  declare decoded_payload_bytes: string;
+  declare raw_payload: CreationOptional<Buffer>;
+  declare last_seen_at: CreationOptional<Date>;
+  declare is_active: CreationOptional<boolean>;
+  declare metadata: CreationOptional<any>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
+
+  // Instance methods
+  public updateLastSeen(): Promise<Device> {
+    return this.update({ last_seen_at: new Date() });
+  }
+
+  public setInactive(): Promise<Device> {
+    return this.update({ is_active: false });
+  }
+
+  public setActive(): Promise<Device> {
+    return this.update({ is_active: true });
+  }
+
+  // Static methods
+  static async findByDeviceId(deviceId: string): Promise<Device | null> {
+    return this.findOne({
+      where: { device_id: deviceId },
+      order: [['last_seen_at', 'DESC']],
+    });
+  }
+
+  static async findActiveDevices(): Promise<Device[]> {
+    return this.findAll({
+      where: { is_active: true },
+      order: [['last_seen_at', 'DESC']],
+    });
+  }
+
+  static async findByApplication(applicationId: string): Promise<Device[]> {
+    return this.findAll({
+      where: { application_id: applicationId },
+      order: [['created_at', 'DESC']],
+    });
+  }
+}
+// Initialize the model with enhanced schema and performance optimizations
 Device.init({
     id: {
         type: DataTypes.INTEGER,
@@ -37,44 +81,128 @@ Device.init({
     device_id: {
         type: DataTypes.STRING(255),
         allowNull: false,
+        unique: true,
+        validate: {
+          notEmpty: true,
+          len: [1, 255],
+        },
     },
     application_id: {
         type: DataTypes.STRING(255),
         allowNull: false,
+        validate: {
+          notEmpty: true,
+          len: [1, 255],
+        },
     },
     dev_eui: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(16),
         allowNull: false,
+        unique: true,
+        validate: {
+          isHexadecimal: true,
+          len: [16, 16],
+        },
     },
     join_eui: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(16),
         allowNull: false,
+        validate: {
+          isHexadecimal: true,
+          len: [16, 16],
+        },
     },
-    //Obtiene el valor de 'decoded_payload_bytes' como una cadena hexadecimal o null si no hay valor.
-    
     decoded_payload_bytes: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: false,
         get() {
-          // Esta función getter asegurará que siempre se maneje el valor como una cadena hexadecimal
           const value = this.getDataValue('decoded_payload_bytes');
-          // Suponiendo que value es un Buffer, lo convertimos a hexadecimal
-          return value ? value.toString('hex') : null;
+          try {
+            return value ? JSON.parse(value) : null;
+          } catch {
+            return value;
+          }
+        },
+        set(value: any) {
+          this.setDataValue('decoded_payload_bytes', typeof value === 'string' ? value : JSON.stringify(value));
         }
+    },
+    raw_payload: {
+        type: DataTypes.BLOB,
+        allowNull: true,
+    },
+    last_seen_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+    },
+    is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+    },
+    metadata: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: {},
     },
     created_at: {
         type: DataTypes.DATE,
+        allowNull: false,
         defaultValue: DataTypes.NOW,
     },
     updated_at: {
         type: DataTypes.DATE,
+        allowNull: false,
         defaultValue: DataTypes.NOW,
     },
 }, {
-    tableName: 'device_payloads',
+    tableName: 'devices',
     sequelize,
     timestamps: true,
     underscored: true,
+    paranoid: true, // Soft deletes
+    indexes: [
+      {
+        name: 'idx_device_id',
+        fields: ['device_id'],
+        unique: true,
+      },
+      {
+        name: 'idx_dev_eui',
+        fields: ['dev_eui'],
+        unique: true,
+      },
+      {
+        name: 'idx_application_id',
+        fields: ['application_id'],
+      },
+      {
+        name: 'idx_last_seen_at',
+        fields: ['last_seen_at'],
+      },
+      {
+        name: 'idx_is_active',
+        fields: ['is_active'],
+      },
+      {
+        name: 'idx_app_active',
+        fields: ['application_id', 'is_active'],
+      },
+    ],
+    hooks: {
+      beforeUpdate: (device) => {
+        device.updated_at = new Date();
+      },
+      afterCreate: (device) => {
+        console.log(`New device created: ${device.device_id}`);
+      },
+      afterUpdate: (device) => {
+        if (device.changed('is_active')) {
+          console.log(`Device ${device.device_id} status changed to: ${device.is_active ? 'active' : 'inactive'}`);
+        }
+      },
+    },
 });
 
 export default Device;

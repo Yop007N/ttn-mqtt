@@ -1,36 +1,83 @@
 {
-    "name": "proyecto",
+    "name": "ttn-mqtt-gateway",
     "version": "1.0.0",
-    "description": "",
+    "description": "MQTT Gateway service for The Things Network integration with energy monitoring system",
     "main": "dist/app.js",
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=8.0.0"
+    },
     "scripts": {
         "prebuild": "rimraf ./dist",
         "build": "tsc",
         "start": "node dist/app.js",
         "dev": "nodemon --exec ts-node src/app.ts",
-        "test": "jest"
+        "dev:watch": "nodemon --watch src --ext ts --exec \"ts-node src/app.ts\"",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
+        "lint": "eslint src/**/*.ts",
+        "lint:fix": "eslint src/**/*.ts --fix",
+        "format": "prettier --write src/**/*.ts",
+        "type-check": "tsc --noEmit",
+        "health": "curl -f http://localhost:3000/api/v1/health || exit 1",
+        "setup:enterprise": "ts-node src/scripts/setupEnterprise.ts",
+        "migrate": "ts-node -e \"import('./src/migrations/migrationRunner').then(m => m.runMigrations())\"",
+        "migrate:rollback": "ts-node -e \"import('./src/migrations/migrationRunner').then(m => m.rollbackMigrations(1))\"",
+        "migrate:status": "ts-node -e \"import('./src/migrations/migrationRunner').then(m => m.getMigrationStatus().then(console.log))\"",
+        "cache:flush": "ts-node -e \"import('./src/services/cacheService').then(c => c.cacheService.invalidatePattern('*'))\"",
+        "metrics": "curl -s http://localhost:3000/api/v1/metrics",
+        "ws:test": "wscat -c ws://localhost:3000/socket.io/?EIO=4&transport=websocket"
     },
-    "keywords": [],
-    "author": "Enrique Bobadilla",
-    "license": "ISC",
+    "keywords": ["ttn", "mqtt", "iot", "gateway", "energy", "monitoring", "typescript", "nodejs"],
+    "author": "Enrique Bobadilla <enrique@example.com>",
+    "license": "MIT",
     "dependencies": {
-        "dotenv": "^16.4.1",
-        "express": "^4.18.2",
-        "mqtt": "^5.3.5",
-        "pg": "^8.11.3",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "helmet": "^7.1.0",
+        "cors": "^2.8.5",
+        "compression": "^1.7.4",
+        "mqtt": "^5.3.6",
+        "pg": "^8.12.0",
         "pg-hstore": "^2.3.4",
-        "sequelize": "^6.36.0"
+        "sequelize": "^6.37.3",
+        "winston": "^3.11.0",
+        "winston-daily-rotate-file": "^5.0.0",
+        "express-rate-limit": "^7.1.5",
+        "rate-limit-redis": "^4.2.0",
+        "ioredis": "^5.3.2",
+        "express-validator": "^7.0.1",
+        "graphql": "^16.8.1",
+        "express-graphql": "^0.12.0",
+        "socket.io": "^4.7.5",
+        "events": "^3.3.0"
     },
     "devDependencies": {
         "@types/express": "^4.17.21",
         "@types/jest": "^29.5.12",
-        "@types/node": "^20.11.16",
+        "@types/node": "^20.14.9",
         "@types/sequelize": "^4.28.20",
+        "@types/cors": "^2.8.17",
+        "@types/compression": "^1.7.5",
+        "@typescript-eslint/eslint-plugin": "^7.13.1",
+        "@typescript-eslint/parser": "^7.13.1",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "prettier": "^3.3.2",
         "jest": "^29.7.0",
-        "nodemon": "^3.0.3",
-        "rimraf": "^3.0.2",
-        "ts-jest": "^29.1.2",
+        "nodemon": "^3.1.4",
+        "rimraf": "^5.0.7",
+        "ts-jest": "^29.1.5",
         "ts-node": "^10.9.2",
-        "typescript": "^5.3.3"
-    }
+        "typescript": "^5.5.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yop007n/ttn-mqtt-gateway.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yop007n/ttn-mqtt-gateway/issues"
+    },
+    "homepage": "https://github.com/yop007n/ttn-mqtt-gateway#readme"
 }

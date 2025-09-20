@@ -1,10 +1,12 @@
-# TTN MQTT Gateway 📡
+# TTN MQTT Gateway Service
 
-> Sistema de comunicación MQTT para dispositivos IoT con integración a PostgreSQL
+[![CI/CD Pipeline](https://github.com/yop007n/ttn-mqtt-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/yop007n/ttn-mqtt-gateway/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/yop007n/ttn-mqtt-gateway/branch/main/graph/badge.svg)](https://codecov.io/gh/yop007n/ttn-mqtt-gateway)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.2-blue.svg)](https://www.typescriptlang.org/)
 
-## 📋 Descripción
-
-TTN MQTT Gateway es una aplicación Node.js robusta que actúa como puente entre dispositivos IoT y bases de datos, utilizando el protocolo MQTT para comunicación en tiempo real. Diseñado específicamente para trabajar con The Things Network (TTN) y optimizado para manejo de grandes volúmenes de datos de sensores.
+A high-performance, production-ready MQTT gateway service for The Things Network (TTN) integration with energy monitoring systems. Built with Node.js, TypeScript, and modern DevOps practices.
 
 ## ✨ Características Principales
 
